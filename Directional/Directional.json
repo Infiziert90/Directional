@@ -1,0 +1,16 @@
+{
+    "Author": "herulume",
+    "Name": "Directional",
+    "Punchline": "Draw the compass directionals around the target for easier callouts",
+    "Description": "Draw the compass directionals around the target (boss relative or true north)",
+    "InternalName": "directional",
+    "ApplicableVersion": "any",
+    "Tags": [
+        "pve",
+        "helper",
+        "combat",
+        "callouts",
+        "directions",
+        "target"
+    ]
+}
