@@ -94,14 +94,36 @@ public static class DirectionUtils
         var screenPosition = WorldToScreen(worldPosition);
         var drawList = ImGui.GetForegroundDrawList();
 
-        var x = (float)Math.Round(screenPosition.X, 2);
-        var y = (float)Math.Round(screenPosition.Y, 2);
+        var x = screenPosition.X;
+        var y = screenPosition.Y;
         drawList.AddText(new Vector2(x, y), ImGui.GetColorU32(colour), text);
     }
 
     private static Vector2 WorldToScreen(Vector3 worldPos)
     {
-        Directional.GameGui.WorldToScreen(worldPos, out var screenPos);
-        return screenPos;
+        unsafe
+        {
+            Vector2 screenPos;
+            WorldMatrix* matrix = null;
+            try
+            {
+                if (Methods.GetMatrix != null) matrix = Methods.GetMatrix();
+            }
+            catch (Exception e)
+            {
+                Directional.Logger.Error("Failed to get world matrix", e);
+            }
+            
+            if (matrix == null)
+            {
+                Directional.GameGui.WorldToScreen(worldPos, out screenPos);
+            }
+            else
+            {
+                matrix->WorldToScreen(worldPos, out screenPos);
+                Directional.Logger.Information("USING WORLD MATRIX");
+            }
+            return screenPos;
+        }
     }
 }

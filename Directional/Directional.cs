@@ -1,4 +1,6 @@
-﻿using Dalamud.Game.ClientState.Objects.Enums;
+﻿using System;
+using Dalamud.Game;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Command;
 using Dalamud.Interface.GameFonts;
@@ -29,15 +31,22 @@ public sealed class Directional : IDalamudPlugin
         Font = PluginInterface.UiBuilder.FontAtlas.NewGameFontHandle(
             new GameFontStyle(GameFontFamily.Axis, Configuration.FontSize));
 
+        try
+        {
+            Methods.Init();
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to init world matrix", e);
+        }
+
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "Draw the compass directionals around the target for easier callouts"
         });
     }
 
-    private GameFontStyle FontStyle { get; set; }
     private IFontHandle Font { get; set; }
-
 
     [PluginService]
     internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -50,6 +59,11 @@ public sealed class Directional : IDalamudPlugin
 
     [PluginService]
     internal static IClientState ClientState { get; private set; } = null!;
+    
+    [PluginService]
+    internal static ISigScanner SigScanner { get; private set; } = null!;
+    [PluginService]
+    internal static IPluginLog Logger { get; private set; } = null!;
 
     public Configuration Configuration { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
