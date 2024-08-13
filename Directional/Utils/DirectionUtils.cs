@@ -91,39 +91,12 @@ public static class DirectionUtils
 
     private static void DrawLabel(string text, Vector3 worldPosition, Vector4 colour)
     {
-        var screenPosition = WorldToScreen(worldPosition);
-        var drawList = ImGui.GetForegroundDrawList();
+        if(!Directional.GameGui.WorldToScreen(worldPosition, out var screenPosition))
+            return;
 
-        var x = screenPosition.X;
-        var y = screenPosition.Y;
-        drawList.AddText(new Vector2(x, y), ImGui.GetColorU32(colour), text);
-    }
+        var drawList = ImGui.GetBackgroundDrawList();
 
-    private static Vector2 WorldToScreen(Vector3 worldPos)
-    {
-        unsafe
-        {
-            Vector2 screenPos;
-            WorldMatrix* matrix = null;
-            try
-            {
-                if (Methods.GetMatrix != null) matrix = Methods.GetMatrix();
-            }
-            catch (Exception e)
-            {
-                Directional.Logger.Error("Failed to get world matrix", e);
-            }
-            
-            if (matrix == null)
-            {
-                Directional.GameGui.WorldToScreen(worldPos, out screenPos);
-            }
-            else
-            {
-                matrix->WorldToScreen(worldPos, out screenPos);
-                Directional.Logger.Information("USING WORLD MATRIX");
-            }
-            return screenPos;
-        }
+		var textSize = ImGui.CalcTextSize(text);
+        drawList.AddText(screenPosition - textSize / 2, ImGui.GetColorU32(colour), text);
     }
 }

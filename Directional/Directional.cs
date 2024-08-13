@@ -31,15 +31,6 @@ public sealed class Directional : IDalamudPlugin
         Font = PluginInterface.UiBuilder.FontAtlas.NewGameFontHandle(
             new GameFontStyle(GameFontFamily.Axis, Configuration.FontSize));
 
-        try
-        {
-            Methods.Init();
-        }
-        catch (Exception e)
-        {
-            Logger.Error("Failed to init world matrix", e);
-        }
-
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "Draw the compass directionals around the target for easier callouts"
