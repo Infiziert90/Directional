@@ -21,7 +21,8 @@ public static class DirectionUtils
     private static readonly Vector3 TrueEast = new(1, 0, 0);
     private static readonly Vector3 TrueWest = new(-1, 0, 0);
 
-    public static void DrawDirectionLabels(IGameObject target, bool drawCardinals, bool drawIntercardinals, Vector4 colour, Vector4 colourBorder)
+    public static void DrawDirectionLabels(
+        IGameObject target, bool drawCardinals, bool drawIntercardinals, Vector4 colour, Vector4 colourBorder)
     {
         var position = target.Position;
         var radius = target.HitboxRadius;
@@ -91,18 +92,18 @@ public static class DirectionUtils
 
     private static void DrawLabel(string text, Vector3 worldPosition, Vector4 colour, Vector4 colourBorder)
     {
-        if(!Directional.GameGui.WorldToScreen(worldPosition, out var screenPosition))
+        if (!Directional.GameGui.WorldToScreen(worldPosition, out var screenPosition))
             return;
 
         var drawList = ImGui.GetBackgroundDrawList();
         var textSize = ImGui.CalcTextSize(text);
-        var pos = screenPosition - textSize / 2;
+        var pos = screenPosition - (textSize / 2);
         var borderSize = (int)MathF.Ceiling(textSize.Y / 40);
 
         drawList.AddText(pos + new Vector2(-borderSize, -borderSize), ImGui.GetColorU32(colourBorder), text);
-        drawList.AddText(pos + new Vector2( borderSize, -borderSize), ImGui.GetColorU32(colourBorder), text);
-        drawList.AddText(pos + new Vector2(-borderSize,  borderSize), ImGui.GetColorU32(colourBorder), text);
-        drawList.AddText(pos + new Vector2( borderSize,  borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos + new Vector2(borderSize, -borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos + new Vector2(-borderSize, borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos + new Vector2(borderSize, borderSize), ImGui.GetColorU32(colourBorder), text);
         drawList.AddText(pos, ImGui.GetColorU32(colour), text);
     }
 }

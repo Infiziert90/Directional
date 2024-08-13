@@ -1,6 +1,4 @@
-﻿using System;
-using Dalamud.Game;
-using Dalamud.Game.ClientState.Objects.Enums;
+﻿using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Command;
 using Dalamud.Interface.GameFonts;
@@ -50,11 +48,6 @@ public sealed class Directional : IDalamudPlugin
 
     [PluginService]
     internal static IClientState ClientState { get; private set; } = null!;
-    
-    [PluginService]
-    internal static ISigScanner SigScanner { get; private set; } = null!;
-    [PluginService]
-    internal static IPluginLog Logger { get; private set; } = null!;
 
     public Configuration Configuration { get; init; }
     private ConfigWindow ConfigWindow { get; init; }
@@ -74,8 +67,13 @@ public sealed class Directional : IDalamudPlugin
         WindowSystem.Draw();
         if (!Configuration.Enabled) return;
 
-        var target = ClientState.LocalPlayer?.TargetObject;
-        if (target is IBattleNpc battleNpc)
+        var player = ClientState.LocalPlayer;
+        if (player == null) return;
+        var target = player.TargetObject;
+        var isInCombat = player.StatusFlags.HasFlag(StatusFlags.InCombat);
+        var isInCombatConfig = !(!isInCombat && Configuration.CombatOnly);
+
+        if (target is IBattleNpc battleNpc && isInCombatConfig)
         {
             var shouldDrawCardinals = Configuration.DrawCardinals;
             var shouldDrawInterCardinals = Configuration.DrawInterCardinals;
@@ -91,7 +89,7 @@ public sealed class Directional : IDalamudPlugin
                             shouldDrawCardinals,
                             shouldDrawInterCardinals,
                             Configuration.Colour,
-							Configuration.ColourBorder);
+                            Configuration.ColourBorder);
                     }
                 }
                 else
@@ -103,7 +101,7 @@ public sealed class Directional : IDalamudPlugin
                             shouldDrawCardinals,
                             shouldDrawInterCardinals,
                             Configuration.Colour,
-							Configuration.ColourBorder);
+                            Configuration.ColourBorder);
                     }
                 }
             }
