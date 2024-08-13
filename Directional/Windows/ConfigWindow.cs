@@ -30,44 +30,24 @@ public class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var enabled = configuration.Enabled;
-        var cardinals = configuration.DrawCardinals;
-        var interCardinals = configuration.DrawInterCardinals;
-        var trueNorth = configuration.TrueNorth;
-        var fontSize = configuration.FontSize;
-        var colour = configuration.Colour;
-        var alwaysDraw = configuration.AlwaysDrawDirections;
+        if (ImGui.Checkbox("Enabled##0", ref configuration.Enabled))
+            configuration.Save();
 
-        if (ImGui.Checkbox("Enabled##0", ref enabled))
-        {
-            configuration.Enabled = enabled;
+        if (ImGui.Checkbox("Show on non-enemies##0", ref configuration.AlwaysDrawDirections))
             configuration.Save();
-        }
-        if (ImGui.Checkbox("Show on non-enemies##0", ref alwaysDraw))
-        {
-            configuration.AlwaysDrawDirections = alwaysDraw;
-            configuration.Save();
-        }
 
         ImGui.Spacing();
         ImGui.BeginGroup();
         CollapsingHeader("Compass##0", () =>
         {
-            if (ImGui.Checkbox("Cardinals##0", ref cardinals))
-            {
-                configuration.DrawCardinals = cardinals;
+            if (ImGui.Checkbox("Cardinals##0", ref configuration.DrawCardinals))
                 configuration.Save();
-            }
-            if (ImGui.Checkbox("Inter-cardinals##0", ref interCardinals))
-            {
-                configuration.DrawInterCardinals = interCardinals;
+
+            if (ImGui.Checkbox("Inter-cardinals##0", ref configuration.DrawInterCardinals))
                 configuration.Save();
-            }
-            if (ImGui.Checkbox("True North##0", ref trueNorth))
-            {
-                configuration.TrueNorth = trueNorth;
+
+            if (ImGui.Checkbox("True North##0", ref configuration.TrueNorth))
                 configuration.Save();
-            }
         });
         ImGui.EndGroup();
         ImGui.Spacing();
@@ -75,19 +55,24 @@ public class ConfigWindow : Window, IDisposable
         CollapsingHeader("UI##0",
                          () =>
                          {
-                             if (ImGui.InputInt("Font size (between 12 and 128)##0", ref fontSize))
+                             if (ImGui.InputInt("Font size (between 12 and 128)##0", ref configuration.FontSize))
                              {
-                                 configuration.FontSize = Math.Clamp(fontSize, 12, 128);
+                                 configuration.FontSize = Math.Clamp(configuration.FontSize, 12, 128);
                                  configuration.Save();
                                  plugin.UpdateFontHandle();
-                                 
                              }
 
-                             if (ImGui.ColorEdit4($"Colour ##0", ref colour, ImGuiColorEditFlags.NoInputs))
-                             {
-                                 configuration.Colour = colour;
+                             if (ImGui.ColorEdit4($"Colour ##0", ref configuration.Colour, ImGuiColorEditFlags.NoInputs))
+							 {
+								 configuration.Colour.W = 1.0f;
                                  configuration.Save();
-                             }
+							 }
+
+                             if (ImGui.ColorEdit4($"Border Colour ##0", ref configuration.ColourBorder, ImGuiColorEditFlags.NoInputs))
+							 {
+								 configuration.ColourBorder.W = 1.0f;
+                                 configuration.Save();
+							 }
                          });
         ImGui.EndGroup();
     }

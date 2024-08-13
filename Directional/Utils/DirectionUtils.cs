@@ -21,7 +21,7 @@ public static class DirectionUtils
     private static readonly Vector3 TrueEast = new(1, 0, 0);
     private static readonly Vector3 TrueWest = new(-1, 0, 0);
 
-    public static void DrawDirectionLabels(IGameObject target, bool drawCardinals, bool drawIntercardinals, Vector4 colour)
+    public static void DrawDirectionLabels(IGameObject target, bool drawCardinals, bool drawIntercardinals, Vector4 colour, Vector4 colourBorder)
     {
         var position = target.Position;
         var radius = target.HitboxRadius;
@@ -31,43 +31,43 @@ public static class DirectionUtils
 
         if (drawCardinals)
         {
-            DrawLabel(N, position + (forward * radius), colour);
-            DrawLabel(S, position - (forward * radius), colour);
-            DrawLabel(E, position - (right * radius), colour);
-            DrawLabel(W, position + (right * radius), colour);
+            DrawLabel(N, position + (forward * radius), colour, colourBorder);
+            DrawLabel(S, position - (forward * radius), colour, colourBorder);
+            DrawLabel(E, position - (right * radius), colour, colourBorder);
+            DrawLabel(W, position + (right * radius), colour, colourBorder);
         }
 
         if (drawIntercardinals)
         {
             var diagonalFactor = radius * MathF.Sqrt(2) / 2;
-            DrawLabel(NE, position + (forward * diagonalFactor) - (right * diagonalFactor), colour);
-            DrawLabel(SE, position - (forward * diagonalFactor) - (right * diagonalFactor), colour);
-            DrawLabel(SW, position - (forward * diagonalFactor) + (right * diagonalFactor), colour);
-            DrawLabel(NW, position + (forward * diagonalFactor) + (right * diagonalFactor), colour);
+            DrawLabel(NE, position + (forward * diagonalFactor) - (right * diagonalFactor), colour, colourBorder);
+            DrawLabel(SE, position - (forward * diagonalFactor) - (right * diagonalFactor), colour, colourBorder);
+            DrawLabel(SW, position - (forward * diagonalFactor) + (right * diagonalFactor), colour, colourBorder);
+            DrawLabel(NW, position + (forward * diagonalFactor) + (right * diagonalFactor), colour, colourBorder);
         }
     }
 
     public static void DrawDirectionLabelsRelativeToTrueNorth(
-        IGameObject target, bool drawCardinals, bool drawIntercardinals, Vector4 colour)
+        IGameObject target, bool drawCardinals, bool drawIntercardinals, Vector4 colour, Vector4 colourBorder)
     {
         var position = target.Position;
         var radius = target.HitboxRadius;
 
         if (drawCardinals)
         {
-            DrawLabel(N, position + (TrueNorth * radius), colour);
-            DrawLabel(S, position + (TrueSouth * radius), colour);
-            DrawLabel(E, position + (TrueEast * radius), colour);
-            DrawLabel(W, position + (TrueWest * radius), colour);
+            DrawLabel(N, position + (TrueNorth * radius), colour, colourBorder);
+            DrawLabel(S, position + (TrueSouth * radius), colour, colourBorder);
+            DrawLabel(E, position + (TrueEast * radius), colour, colourBorder);
+            DrawLabel(W, position + (TrueWest * radius), colour, colourBorder);
         }
 
         if (drawIntercardinals)
         {
             var diagonalFactor = radius * MathF.Sqrt(2) / 2;
-            DrawLabel(NE, position + ((TrueNorth + TrueEast) * diagonalFactor), colour);
-            DrawLabel(SE, position + ((TrueSouth + TrueEast) * diagonalFactor), colour);
-            DrawLabel(SW, position + ((TrueSouth + TrueWest) * diagonalFactor), colour);
-            DrawLabel(NW, position + ((TrueNorth + TrueWest) * diagonalFactor), colour);
+            DrawLabel(NE, position + ((TrueNorth + TrueEast) * diagonalFactor), colour, colourBorder);
+            DrawLabel(SE, position + ((TrueSouth + TrueEast) * diagonalFactor), colour, colourBorder);
+            DrawLabel(SW, position + ((TrueSouth + TrueWest) * diagonalFactor), colour, colourBorder);
+            DrawLabel(NW, position + ((TrueNorth + TrueWest) * diagonalFactor), colour, colourBorder);
         }
     }
 
@@ -89,14 +89,20 @@ public static class DirectionUtils
         return new Vector3(x, 0, z);
     }
 
-    private static void DrawLabel(string text, Vector3 worldPosition, Vector4 colour)
+    private static void DrawLabel(string text, Vector3 worldPosition, Vector4 colour, Vector4 colourBorder)
     {
         if(!Directional.GameGui.WorldToScreen(worldPosition, out var screenPosition))
             return;
 
         var drawList = ImGui.GetBackgroundDrawList();
+        var textSize = ImGui.CalcTextSize(text);
+        var pos = screenPosition - textSize / 2;
+        var borderSize = (int)MathF.Ceiling(textSize.Y / 40);
 
-		var textSize = ImGui.CalcTextSize(text);
-        drawList.AddText(screenPosition - textSize / 2, ImGui.GetColorU32(colour), text);
+        drawList.AddText(pos + new Vector2(-borderSize, -borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos + new Vector2( borderSize, -borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos + new Vector2(-borderSize,  borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos + new Vector2( borderSize,  borderSize), ImGui.GetColorU32(colourBorder), text);
+        drawList.AddText(pos, ImGui.GetColorU32(colour), text);
     }
 }

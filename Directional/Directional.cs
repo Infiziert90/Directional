@@ -90,7 +90,8 @@ public sealed class Directional : IDalamudPlugin
                             target,
                             shouldDrawCardinals,
                             shouldDrawInterCardinals,
-                            Configuration.Colour);
+                            Configuration.Colour,
+							Configuration.ColourBorder);
                     }
                 }
                 else
@@ -101,7 +102,8 @@ public sealed class Directional : IDalamudPlugin
                             target,
                             shouldDrawCardinals,
                             shouldDrawInterCardinals,
-                            Configuration.Colour);
+                            Configuration.Colour,
+							Configuration.ColourBorder);
                     }
                 }
             }
