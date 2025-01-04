@@ -92,7 +92,7 @@ public static class DirectionUtils
 
     private static void DrawLabel(string text, Vector3 worldPosition, Vector4 colour, Vector4 colourBorder)
     {
-        if (!Directional.GameGui.WorldToScreen(worldPosition, out var screenPosition))
+        if (!Plugin.GameGui.WorldToScreen(worldPosition, out var screenPosition))
             return;
 
         var drawList = ImGui.GetBackgroundDrawList();

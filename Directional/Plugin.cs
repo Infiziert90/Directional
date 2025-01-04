@@ -8,49 +8,43 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Directional.Utils;
-using Directional.Windows;
+using Directional.Windows.Config;
 
 namespace Directional;
 
-public sealed class Directional : IDalamudPlugin
+public sealed class Plugin : IDalamudPlugin
 {
+    [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
+    [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
+    [PluginService] internal static IGameGui GameGui { get; private set; } = null!;
+    [PluginService] internal static IClientState ClientState { get; private set; } = null!;
+    [PluginService] internal static IPluginLog Log { get; private set; } = null!;
+
     private const string CommandName = "/dtarget"; // :D
     public readonly WindowSystem WindowSystem = new("Directional");
 
-    public Directional()
+    public Configuration Configuration { get; init; }
+    private ConfigWindow ConfigWindow { get; init; }
+
+    private IFontHandle Font { get; set; }
+
+    public Plugin()
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         ConfigWindow = new ConfigWindow(this);
         WindowSystem.AddWindow(ConfigWindow);
+
         PluginInterface.UiBuilder.Draw += DrawUi;
         PluginInterface.UiBuilder.OpenConfigUi += ToggleConfigUi;
         PluginInterface.UiBuilder.OpenMainUi += ToggleConfigUi;
 
-        Font = PluginInterface.UiBuilder.FontAtlas.NewGameFontHandle(
-            new GameFontStyle(GameFontFamily.Axis, Configuration.FontSize));
+        Font = PluginInterface.UiBuilder.FontAtlas.NewGameFontHandle(new GameFontStyle(GameFontFamily.Axis, Configuration.FontSize));
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
             HelpMessage = "Draw the compass directionals around the target for easier callouts"
         });
     }
-
-    private IFontHandle Font { get; set; }
-
-    [PluginService]
-    internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-
-    [PluginService]
-    internal static ICommandManager CommandManager { get; private set; } = null!;
-
-    [PluginService]
-    internal static IGameGui GameGui { get; private set; } = null!;
-
-    [PluginService]
-    internal static IClientState ClientState { get; private set; } = null!;
-
-    public Configuration Configuration { get; init; }
-    private ConfigWindow ConfigWindow { get; init; }
 
     public void Dispose()
     {
@@ -65,10 +59,14 @@ public sealed class Directional : IDalamudPlugin
     private void DrawUi()
     {
         WindowSystem.Draw();
-        if (!Configuration.Enabled) return;
+
+        if (!Configuration.Enabled)
+            return;
 
         var player = ClientState.LocalPlayer;
-        if (player == null) return;
+        if (player == null)
+            return;
+
         var target = player.TargetObject;
         var isInCombat = player.StatusFlags.HasFlag(StatusFlags.InCombat);
         var isInCombatConfig = !(!isInCombat && Configuration.CombatOnly);
@@ -110,8 +108,7 @@ public sealed class Directional : IDalamudPlugin
 
     internal void UpdateFontHandle()
     {
-        Font = PluginInterface.UiBuilder.FontAtlas.NewGameFontHandle(
-            new GameFontStyle(GameFontFamily.Axis, Configuration.FontSize));
+        Font = PluginInterface.UiBuilder.FontAtlas.NewGameFontHandle(new GameFontStyle(GameFontFamily.Axis, Configuration.FontSize));
     }
 
     private void OnCommand(string command, string args)

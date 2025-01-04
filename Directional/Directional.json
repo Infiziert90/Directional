@@ -1,15 +1,16 @@
 {
-    "Author": "herulume, sevii",
+    "Author": "Infi, herulume, sevii",
     "Name": "Directional",
     "Punchline": "Draw the compass directionals around the target for easier callouts",
     "Description": "Draw the compass directionals around the target (boss relative or true north)",
     "InternalName": "directional",
     "ApplicableVersion": "any",
     "ImageUrls": [
-        "https://raw.githubusercontent.com/herulume/Directional/master/images/img1.png",
-        "https://raw.githubusercontent.com/herulume/Directional/master/images/img2.png"
+        "https://raw.githubusercontent.com/Infiziert90/Directional/master/images/img1.png",
+        "https://raw.githubusercontent.com/Infiziert90/Directional/master/images/img2.png"
     ],
-    "IconUrl": "https://raw.githubusercontent.com/herulume/Directional/master/images/icon.png",
+    "IconUrl": "https://raw.githubusercontent.com/Infiziert90/Directional/master/images/icon.png",
+    "RepoUrl": "https://github.com/Infiziert90/Directional",
     "Tags": [
         "pve",
         "helper",

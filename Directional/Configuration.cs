@@ -9,7 +9,7 @@ public class Configuration : IPluginConfiguration
 {
     public bool AlwaysDrawDirections;
     public Vector4 Colour = Vector4.One;
-    public Vector4 ColourBorder = new(1.0f, 1.0f, 1.0f, 0.0f);
+    public Vector4 ColourBorder = Vector4.One;
     public bool CombatOnly = true;
     public bool DrawCardinals;
     public bool DrawInterCardinals;
@@ -21,6 +21,6 @@ public class Configuration : IPluginConfiguration
 
     public void Save()
     {
-        Directional.PluginInterface.SavePluginConfig(this);
+        Plugin.PluginInterface.SavePluginConfig(this);
     }
 }
