@@ -34,6 +34,7 @@ public partial class ConfigWindow
 
         if (ImGui.CollapsingHeader("UI", ImGuiTreeNodeFlags.DefaultOpen))
         {
+            ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X / 3);
             if (ImGui.InputInt("Font size (between 12 and 128)", ref Plugin.Configuration.FontSize))
             {
                 Plugin.Configuration.FontSize = Math.Clamp(Plugin.Configuration.FontSize, 12, 128);
