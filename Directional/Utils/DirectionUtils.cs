@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace Directional.Utils;
 
