@@ -17,8 +17,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     [PluginService] internal static ICommandManager CommandManager { get; private set; } = null!;
     [PluginService] internal static IGameGui GameGui { get; private set; } = null!;
-    [PluginService] internal static IClientState ClientState { get; private set; } = null!;
-    [PluginService] internal static IPluginLog Log { get; private set; } = null!;
+    [PluginService] internal static IObjectTable ObjectTable { get; private set; } = null!;
 
     private const string CommandName = "/dtarget"; // :D
     public readonly WindowSystem WindowSystem = new("Directional");
@@ -63,7 +62,7 @@ public sealed class Plugin : IDalamudPlugin
         if (!Configuration.Enabled)
             return;
 
-        var player = ClientState.LocalPlayer;
+        var player = ObjectTable.LocalPlayer;
         if (player == null)
             return;
 
